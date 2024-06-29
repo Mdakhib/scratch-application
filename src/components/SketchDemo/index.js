@@ -32,7 +32,6 @@ const SketchDemo = () => {
   const [message, setMessage] = useState("");
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
-  const [isRepeating, setIsRepeating] = useState(false);
 
   const handleOnDragEnd = (result) => {
     const { source, destination } = result;
@@ -77,7 +76,8 @@ const SketchDemo = () => {
     let currentTodo = [...todo]; // Current todo list
     while (repeatCount > 0) {
       for (const item of currentTodo) {
-        await performAnimation(item);
+        const { action, content } = item;
+        await performAnimation({ action, content });
         if (item.action === "repeat") {
           repeatCount++;
           currentTodo = currentTodo.filter((i) => i.action !== "repeat");
@@ -100,9 +100,9 @@ const SketchDemo = () => {
     setRotation(0);
   };
 
-  const performAnimation = (item) => {
+  const performAnimation = ({ action, content }) => {
     return new Promise((resolve) => {
-      switch (item.action) {
+      switch (action) {
         case "move":
           setPosition((prev) => ({ ...prev, x: prev.x + 100 }));
           break;
@@ -133,7 +133,7 @@ const SketchDemo = () => {
           setPosition({ x: randomX, y: randomY });
           break;
         case "sayHello":
-          setMessage(item.content);
+          setMessage(content);
           setTimeout(() => setMessage(""), 1000); // Clear the message after 1 second
           break;
 
@@ -169,7 +169,8 @@ const SketchDemo = () => {
         <div className="w-full h-screen flex flex-row  ">
           <div className="w-1/2 flex-1 h-screen overflow-hidden flex flex-row bg-white border-t border-r border-gray-200 rounded-tr-xl mr-2">
             <DragDropContext onDragEnd={handleOnDragEnd}>
-              <Sidebar items={items} /> <MidArea todo={todo} />
+              <Sidebar items={items} performAnimation={performAnimation} />{" "}
+              <MidArea todo={todo} performAnimation={performAnimation} />
             </DragDropContext>
           </div>
           <div className="w-1/2 h-screen overflow-hidden flex flex-row bg-white border-t border-l border-gray-200 rounded-tl-xl ml-2">

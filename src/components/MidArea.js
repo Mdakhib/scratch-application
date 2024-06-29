@@ -1,7 +1,7 @@
 import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
-export default function MidArea({ todo }) {
+export default function MidArea({ todo, performAnimation }) {
   return (
     <>
       <Droppable droppableId="todo">
@@ -13,7 +13,7 @@ export default function MidArea({ todo }) {
           >
             <h2 className="text-xl font-bold mb-4">Selected Motion</h2>
 
-            {todo.map(({ id, content }, index) => (
+            {todo.map(({ id, content, action }, index) => (
               <Draggable key={id} draggableId={id} index={index}>
                 {(provided) => (
                   <div
@@ -21,6 +21,7 @@ export default function MidArea({ todo }) {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     className="bg-white p-2 mb-2 rounded shadow-md"
+                    onClick={() => performAnimation({ action, content })}
                   >
                     {content}
                   </div>

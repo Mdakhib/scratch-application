@@ -1,7 +1,7 @@
 import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
-export default function Sidebar({ items }) {
+export default function Sidebar({ items, performAnimation }) {
   return (
     <>
       <Droppable droppableId="items">
@@ -12,7 +12,7 @@ export default function Sidebar({ items }) {
             ref={provided.innerRef}
           >
             <h2 className="text-xl font-bold mb-4">Motion</h2>
-            {items.map(({ id, content }, index) => (
+            {items.map(({ id, content, action }, index) => (
               <Draggable key={id} draggableId={id} index={index}>
                 {(provided) => (
                   <div
@@ -20,6 +20,7 @@ export default function Sidebar({ items }) {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     className="flex flex-row flex-wrap bg-blue-500 text-white px-2 py-2 my-2 text-sm cursor-pointer"
+                    onClick={() => performAnimation({ action, content })}
                   >
                     {content}
                   </div>
